@@ -5,6 +5,7 @@
   <title>Videos</title>
 </head>
 <body>
+    <!-- We're going to pull the video times out of the DOM, convert them to numbers (minutes and seconds) and add them up -->
   <ul class="videos">
     <li data-time="5:43">
       Video 1
@@ -182,6 +183,28 @@
     </li>
   </ul>
 <script>
+    // The variable below gives us a node list of all the list items in the ul with the class of videos. But we want an array of time strings. 
+    const timeNodes = Array.from(document.querySelectorAll('[data-time]'));
+
+    const seconds = timeNodes
+        // We're going to map over the array and return an array of just the time strings
+        .map(node => node.dataset.time)
+        .map(timeCode => {
+        const [mins,secs] = timeCode.split(':').map(parseFloat);
+        return (mins * 60) + secs; 
+        })
+    // Next, we're going to reduce the array of seconds into a single total.
+    .reduce ((total, vidSeconds) => total + vidSeconds);
+
+    let secondsLeft = seconds;
+    // we chunk the seconds into hours, then use modulo to get the remainder of seconds left over. We use 3600 because there are 3600 seconds in an hour.
+    const hours = Math.floor(secondsLeft / 3600);
+    secondsLeft = secondsLeft % 3600;
+
+    const mins = Math.floor(secondsLeft / 60);
+    secondsLeft = secondsLeft % 60;
+
+    console.log(hours, mins, secondsLeft)
 </script>
 </body>
 </html>
